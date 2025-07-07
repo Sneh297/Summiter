@@ -26,7 +26,7 @@ app.use(bodyParser.json());
 
 app.get('/ping', (req, res) => {
   res.send('pong');
-});
+}); //UPDATO TH FILE
 
 // Ping every 14 minutes
 cron.schedule('*/1 * * * *', async () => {
