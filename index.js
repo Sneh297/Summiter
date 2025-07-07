@@ -6,6 +6,7 @@ const axios = require('axios');
 //Routes
 const SummitRoutes = require('./routes/SummitRoutes');
 const UserRoutes = require('./routes/UserRoutes');
+const AuthRoutes = require('./routes/AuthRoutes');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
@@ -17,10 +18,11 @@ const app = express();
 app.use('/api/summit', SummitRoutes);
 app.use('/api/user', UserRoutes);
 
+//AUTH
+app.use('/api/auth', AuthRoutes);
+
 app.use(cors());
 app.use(bodyParser.json());
-
-const SELF_URL = 'https://your-app-name.onrender.com/ping';
 
 app.get('/ping', (req, res) => {
   res.send('pong');
@@ -29,7 +31,7 @@ app.get('/ping', (req, res) => {
 // Ping every 14 minutes
 cron.schedule('*/1 * * * *', async () => {
   try {
-    await axios.get(SELF_URL);
+    await axios.get(process.env.SELF_URL);
     console.log('Self-pinged to stay awake');
   } catch (err) {
     console.error('Ping failed:', err.message);
