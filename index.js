@@ -14,6 +14,9 @@ dotenv.config();
 connectDB();
 
 const app = express();
+app.use(cors());
+app.use(bodyParser.json());
+app.use(express.json());
 
 app.use('/api/summit', SummitRoutes);
 app.use('/api/user', UserRoutes);
@@ -21,8 +24,7 @@ app.use('/api/user', UserRoutes);
 //AUTH
 app.use('/api/auth', AuthRoutes);
 
-app.use(cors());
-app.use(bodyParser.json());
+// <- required to parse JSON body
 
 app.get('/ping', (req, res) => {
   res.send('pong');
