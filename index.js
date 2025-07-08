@@ -31,7 +31,7 @@ app.get('/ping', (req, res) => {
 }); //UPDATO TH FILE
 
 // Ping every 14 minutes
-cron.schedule('*/1 * * * *', async () => {
+cron.schedule('*/14 * * * *', async () => {
   try {
     await axios.get(process.env.SELF_URL);
     console.log('Self-pinged to stay awake');

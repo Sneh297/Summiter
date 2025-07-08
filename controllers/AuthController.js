@@ -1,21 +1,45 @@
+const Achievement = require('../models/Achievement');
 const User = require('../models/User');
 const sendResponse = require('../utils/sendResponce');
 
 exports.addUser = async (req, res) => {
-  const { uid, email } = req.body;
+  try {
+    const { uid, email } = req.body;
 
-  const user = await User.findOne({ $or: [{ uid: uid }, { email: email }] });
+    const user = await User.findOne({ $or: [{ uid }, { email }] });
 
-  if (user) {
-    return res.status(400).json({ message: 'User already exists' });
+    if (user) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
+
+    // Create a default empty achievement document
+    const newAchievement = await Achievement.create({ achievements: [] });
+
+    // Generate username from email
+    const username = email.split('@')[0];
+
+    // Create new user and associate achievement ID
+    await User.create({
+      uid,
+      email,
+      username,
+      achievements: newAchievement._id, // Link Achievement
+    });
+
+    res
+      .status(200)
+      .json({ message: 'User and achievement created successfully' });
+  } catch (error) {
+    console.error('Error adding user:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
-  const username = email.split('@')[0];
-  await User.create({ uid, email, username });
-  res.status(200).json({ message: 'User added successfully' });
 };
 
 exports.changeName = async (req, res) => {
   const { uid, username } = req.body;
+
+  const user = await User.findOne({ uid: uid });
+  console.log(user);
   try {
     const user = await User.findOne({ uid: uid });
     if (!user) {

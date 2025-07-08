@@ -14,12 +14,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  achievements: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Achievement',
-    },
-  ],
+  achievements: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Achievement',
+  },
 });
 
 module.exports = mongoose.model('User', userSchema);
