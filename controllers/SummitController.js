@@ -1,9 +1,17 @@
 const Summits = require('../models/Summits');
+const sendResponse = require('../utils/sendResponce');
+
 exports.getSummit = async (req, res) => {
   try {
     const allSummits = await Summits.find();
-    res.status(200).json(allSummits);
+    return sendResponse(
+      res,
+      200,
+      true,
+      'Summits retrieved successfully',
+      allSummits
+    );
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return sendResponse(res, 500, false, error.message);
   }
 };

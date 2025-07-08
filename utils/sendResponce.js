@@ -1,8 +1,11 @@
-const sendResponse = (res, data, status = 200) => {
-  if (status >= 400) {
-    return res.status(status).json({ error: data });
-  }
-  return res.status(status).json(data);
+const sendResponse = (res, statusCode, success, message, data = null) => {
+  const responseObj = {
+    success,
+    message,
+    data,
+  };
+
+  return res.status(statusCode).json(responseObj);
 };
 
 module.exports = sendResponse;

@@ -1,3 +1,4 @@
+const { messaging } = require('firebase-admin');
 const Achievement = require('../models/Achievement');
 const User = require('../models/User');
 const sendResponse = require('../utils/sendResponce');
@@ -9,7 +10,7 @@ exports.addUser = async (req, res) => {
     const user = await User.findOne({ $or: [{ uid }, { email }] });
 
     if (user) {
-      return res.status(400).json({ message: 'User already exists' });
+      return sendResponse(res, 400, false, 'User already exists');
     }
 
     // Create a default empty achievement document
@@ -19,36 +20,39 @@ exports.addUser = async (req, res) => {
     const username = email.split('@')[0];
 
     // Create new user and associate achievement ID
-    await User.create({
+    const newUser = await User.create({
       uid,
       email,
       username,
       achievements: newAchievement._id, // Link Achievement
     });
 
-    res
-      .status(200)
-      .json({ message: 'User and achievement created successfully' });
+    return sendResponse(
+      res,
+      200,
+      true,
+      'User and achievement created successfully'
+    );
   } catch (error) {
-    console.error('Error adding user:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    return sendResponse(res, 500, false, 'Internal server error');
   }
 };
 
 exports.changeName = async (req, res) => {
   const { uid, username } = req.body;
 
-  const user = await User.findOne({ uid: uid });
-  console.log(user);
   try {
-    const user = await User.findOne({ uid: uid });
+    const user = await User.findOne({ uid });
+
     if (!user) {
-      return sendResponse(res, 'User not found', 404);
+      return sendResponse(res, 404, false, 'User not found');
     }
+
     user.username = username;
     await user.save();
-    sendResponse(res, 'Username updated successfully');
+
+    return sendResponse(res, 200, true, 'Username updated successfully');
   } catch (error) {
-    sendResponse(res, error.message, 500);
+    return sendResponse(res, 500, false, error.message);
   }
 };
