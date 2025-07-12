@@ -7,6 +7,7 @@ const axios = require('axios');
 const SummitRoutes = require('./routes/SummitRoutes');
 const UserRoutes = require('./routes/UserRoutes');
 const AuthRoutes = require('./routes/AuthRoutes');
+const AchievementRoutes = require('./routes/AchievementRoutes');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
@@ -14,7 +15,9 @@ dotenv.config();
 connectDB();
 
 const app = express();
-app.use(cors());
+
+app.use(cors({ origin: 'http://127.0.0.1:5500' }));
+
 app.use(bodyParser.json());
 app.use(express.json());
 
@@ -24,6 +27,8 @@ app.use('/api/user', UserRoutes);
 //AUTH
 app.use('/api/auth', AuthRoutes);
 
+//Achievement
+app.use('/api/achievement', AchievementRoutes);
 // <- required to parse JSON body
 
 app.get('/ping', (req, res) => {
